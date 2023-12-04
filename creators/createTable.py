@@ -33,18 +33,19 @@ CREATE TABLE jobPosting (
 create_company_table_query = """
 CREATE TABLE company (
     
-    companyID INT,
+    companyID INT AUTO_INCREMENT,
     companyName VARCHAR(100),
     establishmentDate VARCHAR(100), 
     companySizeID INT,
     sector VARCHAR(100),
+    companyURL VARCHAR(100),
     PRIMARY KEY (companyID)
 )
 """
 create_companySize_table_query = """
 CREATE TABLE companySize (
 
-    companySizeID INT,
+    companySizeID INT AUTO_INCREMENT,
     companySizeName VARCHAR(100),
     PRIMARY KEY (companySizeID)
 )
@@ -63,7 +64,8 @@ CREATE TABLE language (
 
 cursor.execute(create_JobPosting_table_query)
 cursor.execute(create_language_table_query)
-
+cursor.execute(create_companySize_table_query)
+cursor.execute(create_company_table_query)
 conn.commit()
 #cursor.close()
 #conn.close()

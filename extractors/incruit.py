@@ -21,7 +21,7 @@ def get_page_count(keyword):
         
         count = len(pages)
         if count >= 2:
-            return 2
+            return 1
         else:
             return count
         
