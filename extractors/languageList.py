@@ -1,6 +1,10 @@
 from requests import get
 from bs4 import BeautifulSoup
 
+import MySQLdb
+import mysql.connector
+
+
 def extract_languageList():
     url = "https://survey.stackoverflow.co/2023/#technology-most-popular-technologies"
     response = get(url)
@@ -29,8 +33,6 @@ def extract_languageList():
     bashshell_index = result.index('Bash/Shell (all shells)')
     result[bashshell_index] = 'Bash Shell'
 
+    
     return result[:20]
-
-
-        
 

@@ -25,6 +25,10 @@ def insert_jobPosting():
 
     urls = []
     for keyword in languageList:
+        sql = "INSERT INTO language (languageID, languageName) VALUES (%s, %s)"
+        val = (languageList.index(keyword), keyword)
+        mycursor.execute(sql, val)
+        
         if keyword == 'Bash Shell':
             bash = extract_incruit_jobs('bash')
             shell = extract_incruit_jobs('shell')
@@ -46,9 +50,12 @@ def insert_jobPosting():
                     val = (job['position'], job['company'], job['career'], job['education'], job['location'], job['employment_type'], job['link'], languageList.index(keyword))
                     mycursor.execute(sql, val)
                 #jobPostingID += 1
-    print(len(urls))
+
     # 변경사항을 데이터베이스에 적용
     conn.commit()
+
+    return urls
+    
 
 
 company_datas = []
@@ -70,6 +77,7 @@ def insert_company():
             
             company_section = soup.select_one('.mid_company_info')
             
+            # 기업 정보 부분이 없는 경우 제외
             if company_section is not None:
                 conts_box = company_section.select_one('.conts_box')
 
@@ -97,10 +105,16 @@ def insert_company():
                     'company_size' : company_size,
                     'company_sector' : company_sector
                 }
-                
+
+                # company_name 중복 방지
                 if not any(data['company_name'] == company_name for data in company_datas):
                     company_datas.append(company_data)
+    
+    for company_data in company_datas:
+        sql = "INSERT INTO jobPosting (Position, Company, Career, Education, Location, EmploymentType, URL, LanguageID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+                    
+        sql = "INSERT INTO company (companyName, establishmentDate, sector) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+        val = (job['position'], job['company'], job['career'], job['education'], job['location'], job['employment_type'], job['link'], languageList.index(keyword))
+        mycursor.execute(sql, val)
 
 insert_jobPosting()
-
-

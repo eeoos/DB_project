@@ -62,6 +62,7 @@ CREATE TABLE language (
 
 
 cursor.execute(create_JobPosting_table_query)
+cursor.execute(create_language_table_query)
 
 conn.commit()
 #cursor.close()
