@@ -14,13 +14,14 @@ cursor = conn.cursor()
 print(type(cursor))
 # <class 'MySQLdb.cursors.Cursor'>
 
-# CREATE TABLE 쿼리 실행
-create_JobPosting_table_query = """
+# CREATE TABLE 쿼리 실행 # companyID 
+create_JobPosting_table_query = """ 
 CREATE TABLE jobPosting (
     
     JobPostingID INT AUTO_INCREMENT,
     Position VARCHAR(100),
     Company VARCHAR(100),
+    
     Career VARCHAR(100),
     Education VARCHAR(100),
     Location VARCHAR(100),

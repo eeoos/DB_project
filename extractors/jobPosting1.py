@@ -147,22 +147,67 @@ def insert_company():
                     if not any(data['company_name'] == sub_company_name.text for data in company_datas):
                         company_datas.append(company_data)
 
+    # 찾을 수 없는 게시물의 회사 정보         ************************           
+    company_data = {
+                        'link' : None,
+                        'company_name' : "없음",
+                        'establishment_date' : None,
+                        'company_sizeID' : companySizeList.index('무입력'),
+                        'company_sector' : None
+                    }
+    company_datas.append(company_data)
+
     # company 테이블에 데이터 추가
     for company_data in company_datas:
 
         sql = "INSERT INTO company (companyName, establishmentDate, companySizeID, sector, companyURL) VALUES (%s, %s, %s, %s, %s)"
         val = (company_data['company_name'], company_data['establishment_date'], company_data['company_sizeID'], company_data['company_sector'], company_data['link'])
         mycursor.execute(sql, val)
-    
-    # companySize 테이블의 companySizeID로 jobPosting 테이블의 Company 컬럼 업데이트
-    for company_data in company_datas:
-        sql = "UPDATE jobPosting SET Company = (SELECT companySizeID FROM company WHERE companyName = %s) WHERE Company = %s"
-        val = (company_data['company_name'], company_data['company_name'])
-        mycursor.execute(sql, val)
-        
     conn.commit()
 
+companyIDList = []
+
+# 함수 이름 바꾸기
+def fuc():
+    mycursor.execute("SELECT companyID, companyName FROM company")
+    company_data = mycursor.fetchall()
+    company_id_dict = {row[1]: row[0] for row in company_data}
+
+
+    mycursor.execute("SELECT company FROM jobposting")
+    company_data = mycursor.fetchall()
+
+    
+    # 가져온 데이터 출력
+    for row in company_data:
+        company = row[0]
+        if company in company_id_dict:
+            company = company_id_dict[company]
+        else:
+            company = company_id_dict["없음"]
+        companyIDList.append(company)
+
+
+    # 기존 데이터 삭제 (선택 사항)
+    mycursor.execute("UPDATE jobposting SET company = NULL")
+
+    # ALTER TABLE 문 실행하여 컬럼 이름 변경 및 데이터 타입 변경
+    mycursor.execute("ALTER TABLE jobposting CHANGE company companyID INT")
+
+
+
+    # 데이터 입력
+    for companyID in companyIDList:
+        # jobposting 테이블에 데이터 추가하는 코드
+        sql = "UPDATE jobposting SET companyID = %s WHERE companyID IS NULL LIMIT 1"
+        val = (companyID,)
+        mycursor.execute(sql, val)
+        conn.commit()
 insert_company()
+fuc()
+
+
+
 
 
 #python 내부에서 인덱스를 넣지 않은 db 테이블은 어떻게 처리해야하는지 검색 후 처리 
